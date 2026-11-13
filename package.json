@@ -1,0 +1,19 @@
+{
+  "name": "mossimage-layout-editor",
+  "productName": "MossImage Layout Editor",
+  "version": "0.1.0",
+  "description": "Standalone MOSS-Image bounding box and prompt editor",
+  "license": "MIT",
+  "type": "module",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test tests/*.test.js",
+    "test:app": "electron tests/smoke.js",
+    "package:win": "electron-packager . --platform=win32 --arch=x64 --out=dist --asar --ignore=\"^/(dist|tests)(/|$)\""
+  },
+  "devDependencies": {
+    "electron": "45.3.1",
+    "@electron/packager": "20.3.0"
+  }
+}
