@@ -1,6 +1,5 @@
 import { normalize } from './editor/model.js';
 
-export const MAX_LAYOUT_BYTES = 2_000_000;
 export const DEFAULT_SIZE = 1024;
 export const MAX_SIZE = 16384;
 

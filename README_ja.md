@@ -2,7 +2,7 @@
 
 [English](README.md) | 日本語
 
-Create Bounding Boxes (MossImage) のスタンドアローンElectron版です。ComfyUIを起動せずにレイアウトを編集し、MOSS-Imageの生成用プロンプトをJSONで出力できます。
+Tauriで作成した、Create Bounding Boxes (MossImage) のWindows向けスタンドアローンアプリです。ComfyUIを起動せずにレイアウトを編集し、MOSS-Imageの生成用プロンプトをJSONで出力できます。
 
 ComfyUIのワークフロー内で同じレイアウトJSONを編集するには、[ComfyUI-MossImageTools](https://github.com/hybskgks28275/ComfyUI-MossImageTools/blob/main/README_ja.md)を使ってください。
 
@@ -14,7 +14,7 @@ ComfyUIのワークフロー内で同じレイアウトJSONを編集するには
 2. アーカイブ全体を任意のフォルダに展開します。
 3. 展開先の `MossImage Layout Editor.exe` を起動します。実行ファイルと一緒に展開されたファイルは、同じフォルダにまとめて置いてください。
 
-インストーラー不要のポータブル版です。
+インストーラー不要で、Microsoft Edge WebView2 Runtimeを使います。通常はWindows 10・11に入っています。未導入の場合は [Microsoftの配布ページ](https://developer.microsoft.com/microsoft-edge/webview2/)からインストールしてください。Electron版の編集中の内容を引き継ぐには、旧版でレイアウトJSONを保存し、新版で開いてください。
 
 ## レイアウトの編集とプロンプトの出力
 
@@ -26,16 +26,14 @@ ComfyUIのワークフロー内で同じレイアウトJSONを編集するには
 
 ## 開発
 
-Node.js 24で確認しています。
+Node.js 24、Windows x64 MSVC向けの安定版Rust、Microsoft C++ Build Toolsを使用します。[Tauriの開発環境要件](https://v2.tauri.app/start/prerequisites/)を参照してください。
 
 ```powershell
-npm ci
 npm start
 npm test
-npm run test:app
 npm run package:win
 ```
 
-Windows版は `dist/` に出力されます。GitHubで公開する際は、Windows版のビルドフォルダ全体をアーカイブにまとめ、リリースの添付ファイルとしてアップロードします。
+配布用ZIPは `dist/` に作成されます。Windows実行ファイル、英語と日本語のREADME、画面キャプチャ、ライセンスを同梱しており、そのままGitHub Releasesに添付できます。
 
 `src/editor/` には ComfyUI-MossImageTools のエディターを同梱しています。[MITライセンス](LICENSE)が適用されます。
