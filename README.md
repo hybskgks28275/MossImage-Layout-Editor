@@ -2,7 +2,7 @@
 
 English | [日本語](README_ja.md)
 
-A standalone Electron version of Create Bounding Boxes (MossImage). Edit layouts and export JSON prompts for MOSS-Image without running ComfyUI.
+A standalone Windows app for Create Bounding Boxes (MossImage), built with Tauri. Edit layouts and export JSON prompts for MOSS-Image without running ComfyUI.
 
 Use [ComfyUI-MossImageTools](https://github.com/hybskgks28275/ComfyUI-MossImageTools) to edit the same layout JSON inside a ComfyUI workflow.
 
@@ -14,7 +14,7 @@ Use [ComfyUI-MossImageTools](https://github.com/hybskgks28275/ComfyUI-MossImageT
 2. Extract the entire archive to a folder of your choice.
 3. Open `MossImage Layout Editor.exe` from the extracted folder. Keep the executable and the other extracted files together.
 
-The app is portable and requires no installer.
+The app runs without an installer and uses Microsoft Edge WebView2 Runtime, which is usually already installed on Windows 10 and 11. If it is missing, install it from [Microsoft](https://developer.microsoft.com/microsoft-edge/webview2/). To bring an existing Electron draft into Tauri, save it as a layout JSON in the old app and open it in the new app.
 
 ## Edit layouts and export prompts
 
@@ -26,16 +26,14 @@ Use **Open layout JSON** and **Save layout JSON** to exchange editable version 1
 
 ## Development
 
-Tested with Node.js 24.
+Use Node.js 24, a stable Windows x64 MSVC Rust toolchain, and the Microsoft C++ Build Tools. See the [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/).
 
 ```powershell
-npm ci
 npm start
 npm test
-npm run test:app
 npm run package:win
 ```
 
-The Windows build is written to `dist/`. For a GitHub release, archive the entire Windows build folder and upload the archive as a release asset.
+The packaging command creates a ready-to-upload ZIP in `dist/` with the Windows executable, both READMEs, the screenshots, and the license.
 
 The `src/editor/` directory bundles the ComfyUI-MossImageTools editor under the [MIT License](LICENSE).

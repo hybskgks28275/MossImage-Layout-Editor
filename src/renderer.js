@@ -29,7 +29,7 @@ const strings = {
     failed:'The operation failed.' },
 };
 const storageKey = 'moss-layout-draft-v1';
-const desktop = window.mossDesktop;
+const { invoke } = window.__TAURI__.core;
 let width = 1024, height = 1024;
 let locale = localStorage.getItem('moss-language') ?? 'en';
 if (!Object.hasOwn(strings, locale)) locale = 'en';
@@ -77,12 +77,17 @@ function load(result) {
   } finally { loading = false; }
   refresh();
 }
-function resize() {
+async function resize() {
   const w = $('width').valueAsNumber, h = $('height').valueAsNumber;
   if (w === width && h === height) return;
   const reset = () => { $('width').value = width; $('height').value = height; };
   if (!isSize(w) || !isSize(h)) { reset(); message('invalidSize', true); return; }
-  if (layout().boxes.some(b => b.x + b.width > w || b.y + b.height > h) && !window.confirm(strings[locale].shrink)) { reset(); return; }
+  if (layout().boxes.some(b => b.x + b.width > w || b.y + b.height > h)) {
+    reset();
+    if (!await invoke('confirm_resize', { message: strings[locale].shrink })) return;
+    $('width').value = w;
+    $('height').value = h;
+  }
   width = w; height = h;
   editor.setDimensions(w, h);
   $('status').textContent = '';
@@ -90,28 +95,29 @@ function resize() {
 async function run(action) {
   try { await action(); }
   catch (error) {
-    const key = Object.keys(strings[locale]).find(k => error.message.includes(k));
-    message(key ?? 'failed', true, key ? '' : translate(locale, error.message));
+    const detail = error instanceof Error ? error.message : String(error);
+    const key = Object.hasOwn(strings[locale], detail) ? detail : null;
+    message(key ?? 'failed', true, key ? '' : translate(locale, detail));
   }
 }
 
-$('width').onchange = $('height').onchange = resize;
+$('width').onchange = $('height').onchange = () => run(resize);
 $('caption').oninput = $('characters').oninput = refresh;
 $('language').onchange = event => { $('status').textContent = ''; setLanguage(event.target.value); };
 $('open').onclick = () => run(async () => {
-  const raw = await desktop.openLayout();
+  const raw = await invoke('open_layout');
   if (raw === null) return;
   const result = readLayout(raw, { width, height });
   load(result); message(result.stored ? 'opened' : 'legacy');
 });
 $('save').onclick = () => run(async () => {
-  if (await desktop.saveLayout(saveLayout(layout(), options()))) message('saved');
+  if (await invoke('save_layout', { text: saveLayout(layout(), options()) })) message('saved');
 });
 $('copy').onclick = () => run(async () => {
-  await desktop.copyPrompt(JSON.stringify(prompt())); message('copied');
+  await invoke('copy_prompt', { text: JSON.stringify(prompt()) }); message('copied');
 });
 $('export').onclick = () => run(async () => {
-  if (await desktop.savePrompt(JSON.stringify(prompt()) + '\n')) message('exported');
+  if (await invoke('save_prompt', { text: JSON.stringify(prompt()) + '\n' })) message('exported');
 });
 setLanguage(locale, false);
 const draft = localStorage.getItem(storageKey);

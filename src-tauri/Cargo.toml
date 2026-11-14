@@ -1,0 +1,23 @@
+[package]
+name = "mossimage-layout-editor"
+version = "0.2.0"
+edition = "2021"
+license = "MIT"
+
+[build-dependencies]
+tauri-build = "2"
+
+[dependencies]
+tauri = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-clipboard-manager = "2"
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]
+
+[profile.release]
+strip = true
+lto = true
+codegen-units = 1
+opt-level = "s"
